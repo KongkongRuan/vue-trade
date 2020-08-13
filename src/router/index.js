@@ -22,6 +22,9 @@ import ManagementIndex from '../views/superAdmin/ManagementIndex.vue'
 import ProductManagement from '../views/superAdmin/ProductManagement.vue'
 import UserManagement from '../views/superAdmin/UserManagement.vue'
 import DataStatistics from '../views/superAdmin/DataStatistics.vue'
+import ReportManagement from '../views/superAdmin/ReportManagement.vue'
+import BugManagement from '../views/superAdmin/BugManagement.vue'
+import NotifyManagement from '../views/superAdmin/NotifyManagement.vue'
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -47,13 +50,16 @@ export default new Router({
     { path: '/user/RetrievePassword', component: RetrievePassword },
     { path: '/user/OrderDetail', component: OrderDetail },
     { path: '/superAdmin/AdminLogin', component: AdminLogin },
+    { path: '/ht', component: ManagementIndex },
     {
       path: '/superAdmin/ManagementIndex', component: ManagementIndex,
       children: [
         { path: "DataStatistics", name: "数据统计", component: DataStatistics },
         { path: "ProductManagement", name: "商品管理", component: ProductManagement },
         { path: "UserManagement", name: "用户管理", component: UserManagement },
-
+        { path: "ReportManagement", name: "举报管理", component: ReportManagement },
+        { path: "BugManagement", name: "Bug/建议管理", component: BugManagement },
+        { path: "NotifyManagement", name: "通知管理", component: NotifyManagement },
       ]
     },
   ]

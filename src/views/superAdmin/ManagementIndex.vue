@@ -120,6 +120,11 @@ export default {
       tagsPath: []
     };
   },
+  mounted() {
+    if(!this.Common.checkAdmin(this)){
+      this.$router.push({ path:'/superAdmin/AdminLogin'})
+    }
+  },
   methods: {
     toggleSideBar() {
       this.isCollapse = !this.isCollapse;

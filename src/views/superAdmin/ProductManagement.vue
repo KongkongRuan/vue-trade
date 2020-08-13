@@ -119,6 +119,9 @@ export default {
     };
   },
   mounted() {
+    if(!this.Common.checkAdmin(this)){
+      this.$router.push({ path:'/superAdmin/AdminLogin'})
+    }
     this.loding();
   },
   methods: {
@@ -142,7 +145,7 @@ export default {
       this.loding();
     },
     criteriaQuery() {
-      if (this.select == "商品描述") {
+      if (this.select == "商品描述"||this.select==1) {
         this.formPageinfor.userId = -1;
         this.formPageinfor.productDesc = this.input;
       } else if (this.select == 2) {

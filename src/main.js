@@ -8,6 +8,8 @@ import Common from "./components/Common.vue"
 import '@/assets/styles/index.scss' 
 import echarts from 'echarts'
 import  'echarts/theme/macarons.js'
+
+
 Vue.config.productionTip = false
 
 axios.defaults.baseURL="http://localhost:8089/trade" 
@@ -26,8 +28,8 @@ router.beforeEach((to, from, next) => {
   let createTime=JSON.parse(localStorage.getItem("createTime"));
 
   var expirse = Common.expirse;
-  if((new Date().getTime() - createTime >expirse||user==null) &&to.path!="/user/Login"&&to.path!="/superAdmin/AdminLogin"&&to.path!="/"&&to.path!="/user/Register"){
-    if(to.path=="/superAdmin/ManagementIndex/UserManagement"||to.path=="/superAdmin/ManagementIndex/ProductManagement"||to.path=="/superAdmin/ManagementIndex/DataStatistics"){
+  if((new Date().getTime() - createTime >expirse||user==null) &&to.path!="/user/Login"&&to.path!="/superAdmin/AdminLogin"&&to.path!="/"&&to.path!="/user/Register"&&to.path!="/user/RetrievePassword"){
+    if(to.path=="/superAdmin/ManagementIndex/UserManagement"||to.path=="/superAdmin/ManagementIndex/ProductManagement"||to.path=="/superAdmin/ManagementIndex/DataStatistics"||to.path=="/ht"||to.path=="/superAdmin/ManagementIndex/ReportManagement"||to.path=="/superAdmin/ManagementIndex/BugManagement"||to.path=="/superAdmin/ManagementIndex/NotifyManagement"){
       next({
         path: '/superAdmin/AdminLogin'
       })
@@ -36,8 +38,11 @@ router.beforeEach((to, from, next) => {
         path: '/user/Login'
       })
     }
-
-  }else  {
+  }else if(to.path=="/ht"){
+    next({
+      path: '/superAdmin/ManagementIndex/DataStatistics'
+    })
+  } else {
     next();
   }
   //实现了从商品详情返回商品列表不刷新的功能 

@@ -92,6 +92,9 @@ export default {
     };
   },
   mounted() {
+    if(!this.Common.checkAdmin(this)){
+      this.$router.push({ path:'/superAdmin/AdminLogin'})
+    }
     //获取mm-dd格式的日期
     this.nowDate = this.Common.format2();
     //获取订单信息

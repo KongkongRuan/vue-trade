@@ -176,6 +176,7 @@ export default {
       this.showPicker = false;
     },
     addProduct() {
+      this.$toast.setDefaultOptions({ duration: 10000 });
       this.$toast.loading({
         message: "发布中...",
         forbidClick: true
@@ -205,6 +206,7 @@ export default {
             "productadmin/addproduct",
             data
           ).then(response => {
+            this.$toast.setDefaultOptions({ duration: 2000 });
             if (response.data.success == true) {
               this.$toast.success("添加成功！");
               this.$router.push({ path: "/" });
@@ -217,6 +219,7 @@ export default {
             "productadmin/modifyproduct",
             data
           ).then(response => {
+            this.$toast.setDefaultOptions({ duration: 2000 });
             if (response.data.success == true) {
               this.$toast.success("更新成功！");
               this.$router.push({ path: "/" });
@@ -225,7 +228,7 @@ export default {
             }
           });
         }
-
+      
     }
   }
 };

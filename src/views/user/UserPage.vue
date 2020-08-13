@@ -6,13 +6,16 @@
       </van-col>
       <van-col span="12">
         <div class="username">{{user.name}}</div>
-        <div class="ship_address">{{user.shipAddress}}</div>
-        <div @click="modifyUserInfor"
-             v-if="user.shipAddress==null"
-             class="ship_address">暂未设置常住地(点击设置)</div>
+        <!-- <div class="ship_address" v-if="user.sex!=null&&user.qq!=null">今天也是充满希望的一天!</div> -->
+        <van-tag type="success" style="margin-top:8px;" v-if="user.sex!=null&&user.qq!=null" round >今天也是充满希望的一天!</van-tag>
+        <!-- <div @click="modifyUserInfor"
+             v-if="user.sex==null||user.qq==null"
+             class="ship_address" style="color:black">暂未完善人信息(点击设置)</div> -->
+        <van-tag @click="modifyUserInfor"
+             v-if="user.sex==null||user.qq==null" style="margin-top:8px;" round type="danger">暂未完善人信息(点击设置)</van-tag>
       </van-col>
 
-      <span @click="Setting"
+      <span @click="LogOut"
             style="font-size:20px">
         <span class="el-icon-switch-button" />
       </span>
@@ -70,23 +73,24 @@
           <van-icon color="rgb(25,137,250)"
                     size="27px"
                     name="location"
-                    style="margin-left: 19px;" /><br>收货地址管理</van-col>
+                    style="margin-left: 19px;" /><div style="margin-left: -10px;width:100px">收货地址管理</div></van-col>
         <van-col span="7"
                  @click="modifyUserInfor"
-                 style="margin-left: 40px;"><span style="font-size:31px;margin-left: 20px;color:rgb(25,137,250)"
-                class="el-icon-s-custom" /><br>修改个人资料</van-col>
+                 ><span style="font-size:31px;margin-left: 58px;color:rgb(25,137,250)"
+                class="el-icon-s-custom" /> <div style="margin-left: 28px;width:100px">修改个人资料</div></van-col>
 
         <van-col span="7"
                  @click="modifyPassworld"
-                 style="margin-left: 40px;margin-top: 20px;">
+                 style="margin-left: 40px;margin-top: 22px;">
           <van-icon color="rgb(25,137,250)"
                     size="30px"
                     name="lock"
                     style="margin-left: 19px;" /><br>修改密码</van-col>
-        <!-- <van-col span="7"
-                 style="margin-left: 40px;">
-                 <span style="font-size:30px;margin-left: 15px;color:rgb(25,137,250)" class="el-icon-error" />
-                 <br>退出登录</van-col> -->
+        <van-col span="7"
+                 style="margin-top: 25px;"
+                 @click="showBugDialog">
+                 <span style="font-size:30px;margin-left: 55px;color:rgb(25,137,250)" class="el-icon-s-claim" />
+                 <div style="margin-left: 25px;width:100px">提交建议/Bug</div></van-col>
       </div>
     </van-cell>
     <!-- <div @click="logout">
@@ -118,7 +122,16 @@
         </van-tabbar-item>
       </van-tabbar>
     </div>
-
+        <van-dialog
+      :close-on-click-overlay="true"
+      v-model="bugShow"
+      title="提交建议"
+      show-cancel-button
+      @confirm="confirmBug"
+    >
+      <van-field v-model="bug.bugInfo" rows="4" label="建议描述" type="textarea" placeholder="请输入内容" />
+      <el-link  style="margin-left: 28px;margin-bottom: 5px;" href="mqqwpa://im/chat?chat_type=wpa&uin=749868910&version=1&src_type=web&web_src=oicqzone.com'" type="primary">联系管理员</el-link>
+    </van-dialog>
   </div>
 </template>
 <script>
@@ -131,13 +144,15 @@ export default {
       soldCount: "",
       boughtCount: "",
       collectCount: "",
-      generalIncome: ""
+      generalIncome: "",
+      bugShow:false,
+      bug:{bugInfo:""}
     };
   },
   mounted() {
     
     this.user = JSON.parse(localStorage.getItem("currentUser"));
-
+    console.log("用户信息:"+this.user.qq)
     //获取点赞总数
     var userIdData = new FormData();
     userIdData.append("userId", this.user.userId);
@@ -213,7 +228,7 @@ export default {
     });
   },
   methods: {
-    Setting() {
+    LogOut() {
       localStorage.setItem("currentUser", null);
       localStorage.clear();
       sessionStorage.clear();
@@ -250,7 +265,27 @@ export default {
       this.$router.push({
         path: "/user/ModifyPassworld"
       });
-    }
+    },
+    showBugDialog(){
+      this.bugShow=true;
+    },
+    confirmBug() {
+      this.bug.introducerId=this.user.userId;
+      this.bug.introducerQq=this.user.qq;
+      this.bug.introducerQq=-1;
+      this.bug.introducerPhone=localStorage.getItem("username");;
+      this.$http({
+        url: "/bug/commitBug",
+        method: "post",
+        data: this.bug,
+      }).then((response) => {
+        if (response.data.success == true) {
+          this.$toast.success("反馈成功,感谢您的付出!");
+        } else {
+          this.$toast.fail(response.data.errMsg);
+        }
+      });
+    },
   }
 };
 </script>
@@ -338,6 +373,7 @@ export default {
 }
 .home_page {
   margin-right: 15%;
+  
 }
 .add_product {
   position: absolute;

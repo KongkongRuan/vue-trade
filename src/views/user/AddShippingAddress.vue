@@ -17,16 +17,21 @@
       <van-field v-model="shippingAddressForm.phoneNumber"
                  label="电话"
                  placeholder="收货人手机号" />
-      <van-field v-model="shippingAddressForm.areaName"
+      <!-- <van-field v-model="shippingAddressForm.areaName"
                  label="地区"
                  @click="showPopup"
                  placeholder="选择省/市/区"
                  is-link
+                 readonly /> -->
+      <van-field v-model="schoolName"
+                 label="学校"
+                 placeholder="请在个人中心设置学校"
+                 
                  readonly />
       <van-field v-model="shippingAddressForm.detailAddress"
                  label="详细地址"
                  style="border-radius:0px 0px 10px 10px;"
-                 placeholder="街道门牌,楼层房间号等信息" />
+                 placeholder="宿舍楼号,楼层房间号等信息" />
     </div>
     <div class="cell2">
       <van-cell style="border-radius:10px;"
@@ -77,22 +82,51 @@ export default {
         detailAddress: "",
         areaName: "",
         userId: ""
+        
       },
       isDefaultAddress: false,
       disabledChangeDefaultAddress: false,
       show: false,
       buyer: "",
       isEdit: false,
-      areaList
+      areaList,
+      school:{},
+      schoolName:""
     };
   },
   mounted() {
     this.buyer  = this.Common.checkLogin(this);
     // var sessionShippingAddress = JSON.parse(sessionStorage.getItem("shippingAddress"));
+    this.shippingAddressForm.phoneNumber=localStorage.getItem("username");;
+        //获取学校列表
+    this.school.schoolId = this.buyer.schoolId;
+    this.$http({
+      url: "/school/getSchoolById",
+      method: "post",
+      data:this.school
+    }).then((response) => { 
+      if (response.data.success == true) {
+        
+              this.schoolName=response.data.school.schoolName;
+              
+      } else {
+        this.$toast.fail(response.data.errMsg);
+      }
+    });
+
+    // console.log("@@@"+this.buyer.schoolId);
+    // this.schoolName="郑州工商学院";
+    // if(this.buyer.schoolId==1){
+    //     this.schoolName="郑州工商学院";
+    // }
+
+
+
     var routerShippingAddress = JSON.parse(this.$route.query.shippingAddress);
     if (this.buyer == null) {
       return ;
     }
+
     //如果传过来有ShippingAddress则说明是编辑页面
     if (routerShippingAddress != null) {
       this.isEdit = true;
@@ -171,7 +205,8 @@ export default {
         }).then(response => {
           if (response.data.success == true) {
             this.$toast.success("更新成功！");
-            this.$router.push({ path: "/user/ShippingAddressList" });
+            // this.$router.push({ path: "/user/ShippingAddressList" });
+            this.$router.go(-1);
           }
         });
       } else {
@@ -182,7 +217,8 @@ export default {
         }).then(response => {
           if (response.data.success == true) {
             this.$toast.success("添加成功！");
-            this.$router.push({ path: "/user/ShippingAddressList" });
+            // this.$router.push({ path: "/user/ShippingAddressList" });
+            this.$router.go(-1);
           }
         });
       }

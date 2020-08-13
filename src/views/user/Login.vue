@@ -69,10 +69,7 @@ export default {
       console.log("true");
       sessionStorage.setItem("isFromReg", false);
       console.log(sessionStorage.getItem("isFromReg"));
-    } else {
-      console.log("false");
-      this.Common.checkLogin(this);
-    }
+    } 
 
   },
   methods: {

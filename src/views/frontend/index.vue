@@ -1,77 +1,80 @@
 <template name="index">
   <div>
     <!-- 标题 -->
-    <van-nav-bar title="二手交易平台" />
+    <van-nav-bar title="云上二手交易平台" />
+    <van-notice-bar v-if="notifyShow" mode="closeable" left-icon="volume-o" :text="notifyMessage" />
     <!-- 搜索框 -->
-    <van-search v-model='formPageinfor.productDesc'
-                placeholder="请输入搜索关键词"
-                shape="round"
-                @search="onSearch">
-    </van-search>
+    <van-search
+      v-model="formPageinfor.productDesc"
+      placeholder="请输入搜索关键词"
+      shape="round"
+      @search="onSearch"
+    ></van-search>
+
     <!-- 分类块 -->
     <van-grid :column-num="3">
-      <van-grid-item v-for="category in category_list"
-                     :key="category.value"
-                     :text='category.text'
-                     @click="Fn(category.method)">
-        <img class="category_img"
-             :src="category.src" />
+      <van-grid-item
+        v-for="category in category_list"
+        :key="category.value"
+        :text="category.text"
+        @click="Fn(category.method)"
+      >
+        <img class="category_img" :src="category.src" />
         <div class="category_text">{{category.text}}</div>
       </van-grid-item>
     </van-grid>
     <!-- 商品卡片 -->
     <div>
-      <van-list v-model="loading"
-                :finished="finished"
-                finished-text="没有更多了"
-                @load="onLoad">
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <el-row>
-          <el-col :span="12"
-                  v-for="product in this.productList"
-                  :key="product.value">
-            <el-card :body-style="bodyStyle"
-                     @click.native="productDetail(product.productId)">
-              <img :src='Common.ServerBasePath+"/trade"+product.imgAddr'
-                   class="image"
-                   style="border-radius: 5%;">
+          <el-col :span="12" v-for="product in this.productList" :key="product.value">
+            <el-card :body-style="bodyStyle" @click.native="productDetail(product.productId)">
+              <!-- <img v-if="product.productId!=105"
+                :src="Common.ServerBasePath+'/trade'+product.imgAddr"
+                class="image"
+                style=""
+              />-->
+
+              <div
+                class="image2"
+                :style="{'backgroundImage':'url('+Common.ServerBasePath+'/trade'+product.imgAddr.replace(/\\/g,'\\\\')+')',backgroundRepeat:'no-repeat',backgroundPosition:'center center'}"
+              ></div>
               <div style="padding: 14px;">
-                <span style="font-size: 12px;word-wrap:break-word;">{{product.productDesc.slice(0,22)}}</span><span v-if="product.productDesc.length>22">...</span>
-                <div style="height:18px"
-                     v-if="product.productDesc.length<15" />
+                <span
+                  style="font-size: 12px;word-wrap:break-word;"
+                >{{product.productDesc.slice(0,22)}}</span>
+                <span v-if="product.productDesc.length>22">...</span>
+                <div style="height:18px" v-if="product.productDesc.length<15" />
               </div>
               <div style="padding: 0px 0px 14px 14px;">
-                <span style="font-size: 14px;color: red;">￥</span><span style="font-size: 18px;color: red;">{{product.price}}</span>
-                <span v-if="product.originalPrice!=0"
-                      style="font-size: 12px;padding-left: 14px;text-decoration:line-through">{{"￥"+product.originalPrice}}</span>
+                <span style="font-size: 14px;color: red;">￥</span>
+                <span style="font-size: 18px;color: red;">{{product.price}}</span>
+                <span
+                  v-if="product.originalPrice!=0"
+                  style="font-size: 12px;padding-left: 14px;text-decoration:line-through"
+                >{{"￥"+product.originalPrice}}</span>
               </div>
             </el-card>
           </el-col>
         </el-row>
       </van-list>
     </div>
-    <div>
-    </div>
+    <div></div>
     <div class="tabbar">
       <!-- 带路由的底部标签栏 -->
       <van-tabbar class="tabbar">
-        <van-tabbar-item to="/"
-                         class="home_page">
-          <van-icon name="wap-home-o"
-                    size="25px" />
+        <van-tabbar-item to="/" class="home_page">
+          <van-icon name="wap-home-o" size="25px" />
           <div>首页</div>
         </van-tabbar-item>
 
-        <van-tabbar-item to="/product/AddProduct"
-                         class="add_product">
-          <van-icon name="add"
-                    size="3rem"
-                    color="#1989fa" />
+        <van-tabbar-item to="/product/AddProduct" class="add_product">
+          <van-icon name="add" size="3rem" color="#1989fa" />
           <div class="add_product_txt">我要卖</div>
         </van-tabbar-item>
 
         <van-tabbar-item to="/user/UserPage">
-          <van-icon name="user-circle-o"
-                    size="25px" />
+          <van-icon name="user-circle-o" size="25px" />
           <div>我的</div>
         </van-tabbar-item>
       </van-tabbar>
@@ -86,11 +89,11 @@ export default {
         pageIndexStr: 1,
         pageSizeStr: 4,
         productDesc: "",
-        productCategory: ""
+        productCategory: "",
       },
       bodyStyle: {
         padding: "3px",
-        height: "294px"
+        height: "294px",
       },
       imgaddr: "/upload/item/user/1/2020020423064447641.png",
       loading: false,
@@ -98,53 +101,52 @@ export default {
       product_total: 0,
       productList: [],
       scroll: 0,
+      notifyMessage: "",
+      notifyShow: false,
       category_list: [
         {
           src: require("../../../static/image/手机.png"),
           text: "手机",
-          method: "phone"
+          method: "phone",
         },
         {
           src: require("../../../static/image/电脑数码.png"),
           text: "电脑数码",
-          method: "computer"
+          method: "computer",
         },
         {
           src: require("../../../static/image/家具.png"),
           text: "家具",
-          method: "furniture"
+          method: "furniture",
         },
         {
           src: require("../../../static/image/美妆.png"),
           text: "美妆",
-          method: "bm"
+          method: "bm",
         },
 
         {
           src: require("../../../static/image/图书.png"),
           text: "图书",
-          method: "book"
+          method: "book",
         },
         {
           src: require("../../../static/image/全部.png"),
           text: "全部",
-          method: "all"
-        }
-      ]
+          method: "all",
+        },
+      ],
     };
   },
   mounted() {
+    //请求通知
     this.$http({
-      url: "/localauth/islogin",
-      method: "post"
-    }).then(response => {
+      url: "/notify/getNotify",
+      method: "post",
+    }).then((response) => {
       if (response.data.success == true) {
-        if (response.data.currentUser) {
-          localStorage.setItem(
-            "currentUser",
-            JSON.stringify(response.data.currentUser)
-          );
-        }
+        this.notifyMessage=response.data.notifyMessage;
+        this.notifyShow=true;
       }
     });
   },
@@ -153,8 +155,8 @@ export default {
       this.$http({
         url: "frontend/listproductsbyuser",
         method: "post",
-        data: this.formPageinfor
-      }).then(response => {
+        data: this.formPageinfor,
+      }).then((response) => {
         if (response.data.success == true) {
           this.productList = response.data.productList;
         } else {
@@ -180,14 +182,15 @@ export default {
         this.$http({
           url: "frontend/listproducts",
           method: "post",
-          data: this.formPageinfor
-        }).then(response => {
+          data: this.formPageinfor,
+        }).then((response) => {
           if (response.data.success == true) {
             if (this.loading == true) {
               this.product_total = response.data.count;
               //for循环遍历新得到的数组，一条一条插入到展示数组中
               for (let i = 0; i < response.data.productList.length; i++) {
                 this.productList.push(response.data.productList[i]);
+                // this.productList[i].imgaddr=this.productList[i].imgaddr
               }
               this.formPageinfor.pageIndexStr++;
               if (this.productList.length == this.product_total) {
@@ -204,7 +207,7 @@ export default {
     productDetail(productId) {
       this.$router.push({
         path: "/product/ProductDetail",
-        query: { productId: productId }
+        query: { productId: productId },
       });
     },
     //循环绑定函数
@@ -236,8 +239,8 @@ export default {
       this.formPageinfor.productCategory = "";
       this.formPageinfor.productDesc = "";
       this.$options.methods.conditionQuery.bind(this)();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -283,8 +286,16 @@ export default {
   width: 100%;
   height: 178px;
   display: block;
+  border-radius: 5%;
 }
-
+.image2 {
+  width: 192px;
+  height: 178px;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+  background-size: 100%;
+}
 .clearfix:before,
 .clearfix:after {
   display: table;

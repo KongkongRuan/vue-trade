@@ -7,21 +7,26 @@
       <van-field label="账号"
                  v-model="username"
                  readonly
+                 
+                 
                  style="margin-top:60px">
 
       </van-field>
       <van-field label="原密码"
                  type="password"
+                 clearable="true"
                  v-model="oldPassword"
                  placeholder="请输入原密码">
       </van-field>
       <van-field label="新密码"
                  type="password"
+                 clearable="true"
                  v-model="newPassword"
                  placeholder="请输入新密码">
       </van-field>
       <van-field label="确认密码"
                  type="password"
+                 clearable="true"
                  v-model="repNewPassword"
                  placeholder="请再次输入新密码">
       </van-field>
