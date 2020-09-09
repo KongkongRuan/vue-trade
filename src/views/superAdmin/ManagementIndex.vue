@@ -59,12 +59,14 @@
                          :hide-on-click="false">
               
               <span class="el-dropdown-link">
-                {{ username }}
+                admin
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item divided
+                <el-dropdown-item 
                                   @click.native="logout">退出登录</el-dropdown-item>
+                <el-dropdown-item divided
+                                  @click.native="logout">修改密码</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -215,6 +217,7 @@ export default {
 </script>
 
 <style>
+/**鼠标经过菜单的背景色 */
 .el-menu :hover {
   background-color: rgb(38, 52, 69) !important;
   /**不能使用block，
@@ -229,11 +232,18 @@ export default {
 .el-menu {
   border-right-width: 0px !important;
 }
+/**设置当前选中菜单的背景色 */
+.el-menu-item.is-active {
+   background-color: rgb(38, 52, 69) !important;
+}
 .el-menu-item {
   width: 100%;
 }
 .tag {
   margin-left: 5px;
   margin-top: 9px;
+}
+.el-dropdown-link{
+  color: rgb(191, 203, 217);
 }
 </style>
